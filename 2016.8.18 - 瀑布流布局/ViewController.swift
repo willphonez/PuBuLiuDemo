@@ -41,13 +41,14 @@ extension ViewController {
         
         // 设置上拉加载更多数据
         collectionView.footer = MJRefreshAutoNormalFooter(refreshingTarget: self, refreshingAction: "loadMoreData")
-        collectionView.footer.beginRefreshing()
     }
     
     // 加载数据
     @objc private func loadData() {
         
-        dispatch_after(2, dispatch_get_main_queue()) { () -> Void in
+        print("loadData")
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(2.0) * NSEC_PER_SEC)), dispatch_get_main_queue()) { () -> Void in
             
             let path = NSBundle.mainBundle().pathForResource("1.plist", ofType: nil)!
             let shopArray = NSArray(contentsOfFile: path)!
@@ -62,13 +63,18 @@ extension ViewController {
             
             self.collectionView.reloadData()
             self.collectionView.header.endRefreshing()
+            
+            print("endload")
         }
         
     }
     
     // 加载更多数据
     @objc private func loadMoreData() {
-        dispatch_after(2, dispatch_get_main_queue()) { () -> Void in
+        
+        print("loadMore")
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(UInt64(2.0) * NSEC_PER_SEC)), dispatch_get_main_queue()) { () -> Void in
             
             let path = NSBundle.mainBundle().pathForResource("1.plist", ofType: nil)!
             let shopArray = NSArray(contentsOfFile: path)!
@@ -79,6 +85,8 @@ extension ViewController {
             
             self.collectionView.reloadData()
             self.collectionView.footer.endRefreshing()
+            
+            
         }
     }
     
@@ -112,6 +120,7 @@ extension ViewController {
 extension ViewController : UICollectionViewDataSource {
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        collectionView.footer.hidden = shops.count == 0
         return shops.count
     }
     
